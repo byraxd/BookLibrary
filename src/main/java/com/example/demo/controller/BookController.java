@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Book;
+import com.example.demo.response.RatingResponse;
 import com.example.demo.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,10 @@ public class BookController {
         bookService.deleteBook(id);
 
         return ResponseEntity.ok("Book was deleted successfully");
+    }
+
+    @GetMapping("/rating/{bookId}")
+    public ResponseEntity<RatingResponse> getAverageRatingAndAllReviewsByBookId(@PathVariable Long bookId){
+        return ResponseEntity.ok(bookService.getAverageRatingWithAllReview(bookId));
     }
 }

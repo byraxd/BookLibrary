@@ -1,7 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.Rating;
 import com.example.demo.repository.BookRepository;
+import com.example.demo.response.RatingResponse;
 import com.example.demo.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,4 +76,19 @@ public class BookServiceImpl implements BookService {
 
         return book.getAvailableCopies() > 0;
     }
+
+    @Override
+    public RatingResponse getAverageRatingWithAllReview(Long id) {
+        Objects.requireNonNull(id, "id is null");
+        Book book = bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book not found"));
+
+        RatingResponse ratingResponse = RatingResponse
+                .builder()
+                .averageRating(book.getRatings().stream().mapToInt(Rating::getRating).average().orElse(0.0))
+                .reviews(book.getRatings().stream().map(Rating::getReview).toList())
+                .build();
+
+        return ratingResponse;
+    }
+
 }
